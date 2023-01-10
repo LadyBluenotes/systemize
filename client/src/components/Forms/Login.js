@@ -1,5 +1,6 @@
 import React, { useState, Component } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 export default function Login() {
 
@@ -20,9 +21,9 @@ export default function Login() {
             />
           </div>
           <div className="d-grid">
-            <button type="submit" className="btn btn-primary">
+            <Button type="submit">
               Log In
-            </button>
+            </Button>
           </div>
           <p className="small-text text-right">
             <a href="/sign-in">Don't have an account?</a>
