@@ -26,14 +26,15 @@ export default function Register() {
     };
 
     axios(config)
-      .then((result) => {
-        console.log(result)
+      .then((res) => {
+        console.log(res)
         setShowSuccess(true)
         setRegister(true);
+        res.redirect('/home')
       })
-      .catch((error) => {
+      .catch((err) => {
         setShowError(true)
-        error = new Error();
+        err = new Error();
       });
   };
   
