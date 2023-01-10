@@ -9,8 +9,8 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("")
   const [register, setRegister] = useState(false);
-  // const [showError, setShowError] = useState(false);
-  // const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,9 +28,11 @@ export default function Register() {
     axios(config)
       .then((result) => {
         console.log(result)
+        setShowSuccess(true)
         setRegister(true);
       })
       .catch((error) => {
+        setShowError(true)
         error = new Error();
       });
   };
@@ -39,7 +41,7 @@ export default function Register() {
 
     return (
       <div>
-        {/* <ToastContainer>
+        <ToastContainer>
           <Toast
             className="d-inline-block m-1 toast"
             onClose={() => setShowError(false)} 
@@ -70,7 +72,7 @@ export default function Register() {
               <strong className="me-auto">User successfully created!</strong>
             </Toast.Header>
           </Toast>
-        </ToastContainer> */}
+        </ToastContainer>
 
         <form className='auth-wrapper auth-inner'>
           <h3>Sign Up</h3>
