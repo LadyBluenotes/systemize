@@ -1,26 +1,18 @@
-const { MongoClient } = require("mongodb");
-const Db = process.env.MONGODB_URI;
+const mongoose = require("mongoose");
+require('dotenv').config()
 
-const client = new MongoClient(Db, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
- 
-let _db;
- 
-module.exports = {
-  connectToServer: function (callback) {
-    client.connect(function (err, db) {
-      if (db)
-      {
-        _db = db.db("systemize");
-        console.log("Successfully connected to MongoDB."); 
-      }
-      return callback(err);
-         });
-  },
- 
-  getDb: function () {
-    return _db;
-  },
-};
+async function dbConnect() {
+  mongoose.set("strictQuery", false);
+  mongoose.connect(
+    process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+    }).then(() => {
+      console.log("Successfully connected to MongoDB Atlas!");
+    }).catch((error) => {
+      console.log("Unable to connect to MongoDB Atlas!");
+      console.error(error);
+    });
+}
+
+module.exports = dbConnect;
