@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-    id:{
-        type: Number,
-    }, 
     name: {
         type: String,
         required: [true, "Please provide an name!"]
@@ -12,6 +9,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide an username!"],
         unique: [true, "Username already exists."],
+        minlength: 4
     }, 
     password: {
         type: String,
