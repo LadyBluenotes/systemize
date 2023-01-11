@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Button, Toast, ToastContainer } from 'react-bootstrap';
+import { Button, Toast, ToastContainer } from 'react-bootstrap';
 import axios from 'axios';
 
-export default function Register() {
+// errors for when password or username is too short to prevent from submitting
+
+export default function SignUp() {
 
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("")
-  const [register, setRegister] = useState(false);
+  const [password, setPassword] = useState("");
+  const [signUp, setSignUp] = useState(false);
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,21 +30,18 @@ export default function Register() {
 
     axios(config)
       .then((res) => {
-        console.log(res)
-        setShowSuccess(true)
-        setRegister(true);
-        res.redirect('/home')
+        setShowSuccess(true);
+        setSignUp(true);
+        navigate('/home');
       })
       .catch((err) => {
         setShowError(true)
         err = new Error();
       });
   };
-  
-
 
     return (
-      <div>
+      <>
         <ToastContainer>
           <Toast
             className="d-inline-block m-1 toast"
@@ -52,15 +52,14 @@ export default function Register() {
             autohide
           >
             <Toast.Header>
-              <strong className="me-auto">Error creating user.</strong>
+              <strong className="me-auto">Error creating account.</strong>
             </Toast.Header>
             <Toast.Body>
+              {/* put error message here (ex. username already in use, password / username too short, something left empty*/}
               Please try again.
             </Toast.Body>
           </Toast>
-        </ToastContainer>
 
-        <ToastContainer>
           <Toast
             className="d-inline-block m-1 toast"
             onClose={() => setShowSuccess(false)} 
@@ -70,7 +69,7 @@ export default function Register() {
             autohide
           >
             <Toast.Header>
-              <strong className="me-auto">User successfully created!</strong>
+              <strong className="me-auto">account successfully created!</strong>
             </Toast.Header>
           </Toast>
         </ToastContainer>
@@ -124,7 +123,6 @@ export default function Register() {
             <a href="/login">Already have an account?</a>
           </p>
       </form>
-
-    </div>
+    </>
     )
 }

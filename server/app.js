@@ -60,6 +60,7 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  
   User.findOne({ username: req.body.username })
     .then((user) => {
       bcrypt.compare(req.body.password, user.password).then((passwordCheck) => {
