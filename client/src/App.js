@@ -3,12 +3,26 @@ import { Route, Routes } from "react-router-dom";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css';
  
-import SignUp from "./components/Forms/SignUp";
-import Login from './components/Forms/Login';
-import Navbar from "./components/navbar";
-import FrontPage from "./components/frontpage";
+import SignUp from "./pages/SignUp";
+import Login from './pages/Login';
+import Navbar from "./components/Navbar";
+import FrontPage from "./pages/FrontPage";
+import Home from './pages/Home';
+import Protected from './components/Protected';
  
 const App = () => {
+
+  //for buttons to sign out:
+
+  // const [isSignedIn, setIsSignedIn] = useState(null);
+  // const signin = () => {
+  //   setIsSignedIn(true)
+  // };
+
+  // const signout = () => {
+  //   setIsSignedIn(false)
+  // };
+
  return (
    <div>
      <Navbar />
@@ -16,6 +30,10 @@ const App = () => {
         <Route exact path='/' element={<FrontPage />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/home" element={
+          <Protected>
+              <Home />
+          </Protected>} />
      </Routes>
    </div>
  );

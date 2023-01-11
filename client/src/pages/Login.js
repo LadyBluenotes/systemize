@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Toast, ToastContainer } from 'react-bootstrap';
 import axios from 'axios';
+import Cookie from 'cookie-universal';
+const cookies = Cookie();
+
 export default function Login() {
 
   const [username, setUsername] = useState("");
@@ -25,7 +28,10 @@ export default function Login() {
 
     axios(config)
       .then((res) => {
-        console.log(res.body);
+        cookies.set("TOKEN", res.data.TOKEN, {
+          path: '/',
+          maxAge: 60 * 60 * 24
+        })
         setShowSuccess(true);
         setLogin(true);
         navigate('/home');
