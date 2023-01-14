@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './index.css';
@@ -11,6 +11,17 @@ import Home from './pages/Home';
 import Protected from './components/Protected';
  
 const App = () => {
+
+  const [isSignedIn, setIsSignedIn] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsSignedIn(true);
+    } else {
+      setIsSignedIn(false);
+    }
+  }, []);
 
   //for buttons to sign out:
 
@@ -31,7 +42,7 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={
-          <Protected>
+          <Protected isSignedIn={isSignedIn} >
               <Home />
           </Protected>} />
      </Routes>

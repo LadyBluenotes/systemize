@@ -28,19 +28,27 @@ export default function Login() {
 
     axios(config)
       .then((res) => {
+        console.log(res.data)
         cookies.set("TOKEN", res.data.TOKEN, {
           path: '/',
           maxAge: 60 * 60 * 24
         })
+
+        localStorage.clear();
+        localStorage.setItem("username", res.data.username);
+        localStorage.setItem("token", res.data.token);
+
         setShowSuccess(true);
         setLogin(true);
-        navigate('/home');
+        navigate("/home");
+
       })
       .catch((err) => {
         setShowError(true)
         err = new Error();
       });
   };
+
 
   return (
     <>
