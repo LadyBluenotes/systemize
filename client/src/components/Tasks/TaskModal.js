@@ -1,0 +1,113 @@
+import react, { useState } from 'react';
+import { Form, Button, Modal } from 'react-bootstrap';
+
+export default function TaskModal() {
+    const [show, setShow] = useState(false);
+    const [task, setTask] = useState({
+        title: "",
+        description: "",
+        priority: "Low",
+        dueDate: Date.now,
+        completed: "No",
+        userId: "",
+    });
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const handleChange = (e) => {
+        setTask({
+            ...task,
+            [e.target.name]: e.target.value,
+        });
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const username = localStorage.getItem("username");
+        console.log(username);
+
+        try {
+            const res = await fetch('http://localhost:5000/addtask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: task.title,
+                    description: task.description,
+                    priority: task.priority,
+                    dueDate: task.dueDate,
+                    completed: task.completed,
+                    username: username,
+                })
+            });
+
+            const data = await res.json();
+
+            console.log(data);
+
+            if (!res.ok) {
+                throw new Error(data.message);
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    return (
+        <>
+            <Button variant="primary" onClick={handleShow}>
+                Create Task
+            </Button>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create Task</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="formTaskTitle">
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control type="text" placeholder="Enter title" name="title" value={task.title} onChange={handleChange} />
+                        </Form.Group>
+                        <Form.Group controlId="formTaskDescription">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" placeholder="Enter description" name="description" value={task.description} onChange={handleChange} />
+                        </Form.Group>
+                        <Form.Group controlId="formTaskPriority">
+                            <Form.Label>Priority</Form.Label>
+                            <Form.Control as="select" name="priority" value={task.priority} onChange={handleChange}>
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                            </Form.Control>
+                        </Form.Group>
+                        <Form.Group controlId="formTaskDueDate">
+                            <Form.Label>Due Date</Form.Label>
+                            <Form.Control type="date" name="dueDate" value={task.dueDate} onChange={handleChange} />
+                        </Form.Group>
+                        <Form.Group controlId="formTaskCompleted">
+                            <Form.Label>Completed</Form.Label>
+                            <Form.Control as="select" name="completed" value={task.completed} onChange={handleChange}>
+                                <option>Yes</option>
+                                <option>No</option>
+                                <option>In Progress</option>
+                            </Form.Control>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+}

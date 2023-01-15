@@ -98,12 +98,65 @@ app.post("/login", (req, res) => {
     });
 });
 
-app.get("/unauth", (req, res) => {
-  res.json({ message: "Successful" });
+app.get('/alltasks', auth, (req, res) => {
+  User.findOne({ username: req.body.username })
+    .then((user) => {
+      res.status(200).send({  
+        message: "Tasks retrieved successfully",
+        tasks: user.tasks,
+      });
+    }).catch((err) => {
+      res.status(404).send({
+        message: "Tasks not found",
+        err,
+      });
+    });
 });
 
-app.get("/home", auth, (req, res) => {
-  res.send({ message: "You are authorized to access me" });
-});
+app.post('/addtask', auth, (req, res) => {
+
+  // find user by username and add task to user.tasks array
+  User.findOne({ username: req.body.username })
+    .then((user) => {
+      user.tasks.push(req.body.task);
+      user.save().then((success) => {
+        res.status(201).send({
+          message: "Task successfully added",
+          success,
+        });
+      }).catch((err) => {
+        res.status(500).send({
+          message: "Error adding task",
+          err,
+        });
+      });
+    }).catch((err) => {
+      res.status(404).send({
+        message: "User not found",
+        err,
+      });
+    });
+  });
+
+  // User.findOne({ username: req.body.username })
+  //   .then((user) => {
+  //     user.tasks.push(user.task);
+  //     user.save().then((success) => {
+  //       res.status(201).send({
+  //         message: "Task successfully added",
+  //         success,
+  //       });
+  //     }).catch((err) => {
+  //       res.status(500).send({
+  //         message: "Error adding task",
+  //         err,
+  //       });
+  //     });
+  //   }).catch((err) => {
+  //     res.status(404).send({
+  //       message: "User not found",
+  //       err,
+  //     });
+  //   });
 
 module.exports = app;
