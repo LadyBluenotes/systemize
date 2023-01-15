@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Toast, ToastContainer } from 'react-bootstrap';
-import axios from 'axios';
 
 // errors for when password or username is too short to prevent from submitting
 
@@ -18,26 +17,65 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const config = {
-      method: "post",
-      url: "http://localhost:5000/signup",
-      data: {
-        name,
-        username,
-        password,
-      },
-    };
+    try {
+      // const res = await fetch('http://localhost:5000/login', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }, 
+      //   body: JSON.stringify({
+      //     name: name,
+      //     username: username,
+      //     password: password
+      //   })
+      // });
 
-    axios(config)
-      .then((res) => {
-        setShowSuccess(true);
-        setSignUp(true);
-        navigate('/home');
-      })
-      .catch((err) => {
-        setShowError(true)
-        err = new Error();
+      // const data = await res.json();
+
+      // if (!res.ok) {
+      //   setShowError(true);
+      //   throw new Error(data.message);
+      // }
+
+      // setShowSuccess(true);
+      // setSignUp(true);
+
+      // localStorage.setItem("username", data.username);
+      // localStorage.setItem("token", data.token);
+
+      // navigate('/home');
+
+      const res = await fetch('http://localhost:5000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          username: username,
+          password: password
+        })
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setShowError(true);
+        throw new Error(data.message);
+      }
+
+      setShowSuccess(true);
+      setSignUp(true);
+
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("token", data.token);
+
+      navigate('/home');
+
+    } catch (err) {
+      setShowError(true)
+      err = new Error();
+    }
   };
 
     return (

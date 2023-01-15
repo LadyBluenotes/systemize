@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Login from './pages/Login';
 import Navbar from "./components/Navbar";
 import FrontPage from "./pages/FrontPage";
+import Tasks from './pages/Tasks';
 import Home from './pages/Home';
 import Protected from './components/Protected';
  
@@ -15,6 +16,7 @@ const App = () => {
   const [isSignedIn, setIsSignedIn] = useState(null);
 
   useEffect(() => {
+
     const token = localStorage.getItem("token");
     if (token) {
       setIsSignedIn(true);
@@ -44,6 +46,10 @@ const App = () => {
         <Route path="/home" element={
           <Protected isSignedIn={isSignedIn} >
               <Home />
+          </Protected>} />
+        <Route path="/tasks" element={
+          <Protected isSignedIn={isSignedIn} >
+              <Tasks />
           </Protected>} />
      </Routes>
    </div>

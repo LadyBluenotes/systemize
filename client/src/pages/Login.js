@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Toast, ToastContainer } from 'react-bootstrap';
-import axios from 'axios';
 import Cookie from 'cookie-universal';
 const cookies = Cookie();
 
@@ -14,41 +13,41 @@ export default function Login() {
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const config = {
-      method: "post",
-      url: "http://localhost:5000/login",
-      data: {
-        username,
-        password,
-      },
-    };
-
-    axios(config)
-      .then((res) => {
-        console.log(res.data)
-        cookies.set("TOKEN", res.data.TOKEN, {
-          path: '/',
-          maxAge: 60 * 60 * 24
+    try {
+      const res = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }, 
+        body: JSON.stringify({
+          username: username,
+          password: password
         })
-
-        localStorage.clear();
-        localStorage.setItem("username", res.data.username);
-        localStorage.setItem("token", res.data.token);
-
-        setShowSuccess(true);
-        setLogin(true);
-        navigate("/home");
-
-      })
-      .catch((err) => {
-        setShowError(true)
-        err = new Error();
       });
-  };
 
+      const data = await res.json();
+
+      if (!res.ok) {
+        setShowError(true);
+        throw new Error(data.message);
+      }
+
+      setShowSuccess(true);
+      setLogin(true);
+
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("token", data.token);
+
+      navigate('/home');
+
+    } catch (err) {
+      setShowError(true);
+      console.error(err);
+    }
+  };
 
   return (
     <>
