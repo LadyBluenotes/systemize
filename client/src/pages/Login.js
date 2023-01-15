@@ -42,6 +42,7 @@ export default function Login() {
       localStorage.setItem("token", data.token);
 
       navigate('/home');
+      window.location.reload();
 
     } catch (err) {
       setShowError(true);

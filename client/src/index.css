@@ -69,3 +69,7 @@ body, html, .App, #root, .auth-wrapper {
 .small-text a {
   color: #167bff;
 }
+.logout-placement {
+  position: absolute;
+  right: 20px;
+}

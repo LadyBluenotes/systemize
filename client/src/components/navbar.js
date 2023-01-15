@@ -1,27 +1,38 @@
-import React from "react";
-// import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 
-export default function Navbar(){
+function AppNavbar({ isSignedIn }) {
 
-    return(
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a className="navbar-brand" href="#">Systemize</a>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul className="navbar-nav">
-                    <li className="nav-item active">
-                        <a className="nav-link" href="/">Home</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="/login">Login</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="/signup">Sign Up</a>
-                    </li>
-                </ul>
-            </div>
-            </nav>
-    )
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.reload();
+    }
+
+  return (
+    <Navbar bg="dark" variant="dark" expand="md">
+      <Navbar.Brand href="/home">Systemize</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          {!isSignedIn && (
+            <>
+              <Nav.Link href="/login">Login</Nav.Link>
+              <Nav.Link href="/signup">Sign Up</Nav.Link>
+            </>
+          )}
+          {isSignedIn && (
+            <>
+                <Nav.Link href="/dashboard">Home</Nav.Link>
+                <Nav.Link href="/tasks">Tasks</Nav.Link>
+                <Button variant="outline-danger" className="logout-placement" onClick={handleLogout}>Logout</Button>
+              
+            </>
+          )}
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+  );
 }
+
+export default AppNavbar;
