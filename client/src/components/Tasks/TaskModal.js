@@ -25,14 +25,13 @@ export default function TaskModal() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const username = localStorage.getItem("username");
-        console.log(username);
+        const userId = localStorage.getItem("userId");
 
         try {
-            const res = await fetch('http://localhost:5000/addtask', {
+            const res = await fetch(`http://localhost:5000/${userId}/addtask`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     title: task.title,
@@ -40,20 +39,16 @@ export default function TaskModal() {
                     priority: task.priority,
                     dueDate: task.dueDate,
                     completed: task.completed,
-                    username: username,
-                })
+                    userId: userId,
+                }),
             });
-
             const data = await res.json();
-
-            console.log(data);
-
             if (!res.ok) {
                 throw new Error(data.message);
             }
 
         } catch (err) {
-            console.error(err);
+            console.log(err.message);
         }
     }
 

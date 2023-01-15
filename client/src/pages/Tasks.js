@@ -10,7 +10,6 @@ import react from 'react';
 // components should be 
 // - Task
 // - TaskList
-// - TaskForm
 // - TaskFilter
 // - TaskSearch
 // - TaskGroup

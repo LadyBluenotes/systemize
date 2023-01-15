@@ -26,10 +26,11 @@ const TaskSchema = new mongoose.Schema({
         default: "No",
         enum: ["Yes", "No", "In Progress"],
     },
-    username: {
+    userId:{
         type: String,
-        required: [true],
-    },
+    }
 });
+
+module.exports = mongoose.model.Tasks || mongoose.model("Tasks", TaskSchema);
 
     

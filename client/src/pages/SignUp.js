@@ -18,38 +18,11 @@ export default function SignUp() {
     e.preventDefault();
 
     try {
-      // const res = await fetch('http://localhost:5000/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }, 
-      //   body: JSON.stringify({
-      //     name: name,
-      //     username: username,
-      //     password: password
-      //   })
-      // });
-
-      // const data = await res.json();
-
-      // if (!res.ok) {
-      //   setShowError(true);
-      //   throw new Error(data.message);
-      // }
-
-      // setShowSuccess(true);
-      // setSignUp(true);
-
-      // localStorage.setItem("username", data.username);
-      // localStorage.setItem("token", data.token);
-
-      // navigate('/home');
-
       const res = await fetch('http://localhost:5000/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        },
+        }, 
         body: JSON.stringify({
           name: name,
           username: username,
@@ -59,6 +32,8 @@ export default function SignUp() {
 
       const data = await res.json();
 
+      console.log(data);
+
       if (!res.ok) {
         setShowError(true);
         throw new Error(data.message);
@@ -67,14 +42,14 @@ export default function SignUp() {
       setShowSuccess(true);
       setSignUp(true);
 
-      localStorage.setItem("username", data.username);
+      localStorage.setItem("userId", data.userId);
       localStorage.setItem("token", data.token);
 
       navigate('/home');
 
     } catch (err) {
-      setShowError(true)
-      err = new Error();
+      setShowError(true);
+      console.error(err);
     }
   };
 

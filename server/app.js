@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 
 const dbConnect = require("./db/conn");
 const User = require("./models/user");
+const Task = require("./models/task");
 const auth = require("./auth");
 
 dbConnect();
@@ -31,132 +32,116 @@ app.get("/", (req, res, next) => {
   next();
 });
 
-app.post("/signup", (req, res) => {
-
-  bcrypt.hash(req.body.password, 10).then((hashedPassword) => {
-      const user = new User({
-        name: req.body.name,
-        username: req.body.username,
-        password: hashedPassword,
-      });
-
-    user.save().then((success) => {
-        res.status(201).send({
-          res: "User successfully created.",
-          success,
-        });
-      }).catch((err) => {
-        res.status(500).send({
-          message: "Error creating user.",
-          err,
-        });
-      });
-    }).catch((err) => {
-      console.log(err)
-      res.status(500).send({
-        message: {err},
-      });
+app.post("/signup", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = new User({
+      name: req.body.name,
+      username: req.body.username,
+      password: hashedPassword,
     });
+    await user.save();
+    res.status(201).send({
+      res: "User successfully created."
+    });
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({
+      message: "Error creating user."
+    });
+  }
 });
 
-app.post("/login", (req, res) => {
-  
-  User.findOne({ username: req.body.username })
-    .then((user) => {
-      bcrypt.compare(req.body.password, user.password).then((passwordCheck) => {
-          if(!passwordCheck) {
-            return res.status(400).send({
-              message: "Passwords does not match",
-              err,
-            });
-          }
-          const token = jwt.sign(
-            {
-              userId: user._id,
-              userUsername: user.username,
-            },
-            "RANDOM-TOKEN",
-            { expiresIn: "24h" }
-          );
-          res.status(200).send({
-            message: "Login Successful",
-            username: user.username,
-            token,
-          });
-        })
-        .catch((err) => {
-          res.status(400).send({
-            message: "Passwords does not match",
-            err,
-          });
-        });
-    }).catch((err) => {
-      res.status(404).send({
-        message: "Email not found",
-        err,
+app.post("/login", async (req, res) => {
+  try {
+
+    const user = await User.findOne({ username: req.body.username });
+
+    if(!user) {
+      return res.status(404).send({
+        message: "Email not found"
       });
+    }
+    const passwordCheck = await bcrypt.compare(req.body.password, user.password);
+
+    if(!passwordCheck) {
+      return res.status(400).send({
+        message: "Passwords does not match"
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        userUsername: user.username,
+      },
+      "RANDOM-TOKEN",
+      { expiresIn: "24h" }
+    );
+
+    res.status(200).send({
+      message: "Login Successful",
+      username: user.username,
+      userId: user._id,
+      token,
     });
+
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({
+      message: "Error logging in",
+    });
+  }
 });
 
-app.get('/alltasks', auth, (req, res) => {
-  User.findOne({ username: req.body.username })
-    .then((user) => {
-      res.status(200).send({  
-        message: "Tasks retrieved successfully",
-        tasks: user.tasks,
-      });
-    }).catch((err) => {
-      res.status(404).send({
-        message: "Tasks not found",
-        err,
-      });
-    });
-});
+app.get('/users/:username', (req, res) => {
+  const { username } = req.params;
 
-app.post('/addtask', auth, (req, res) => {
+  User.findOne({ username }, (err, user) => {
+      if (err) {
+          return res.status(500).json({ message: err });
+      }
 
-  // find user by username and add task to user.tasks array
-  User.findOne({ username: req.body.username })
-    .then((user) => {
-      user.tasks.push(req.body.task);
-      user.save().then((success) => {
-        res.status(201).send({
-          message: "Task successfully added",
-          success,
-        });
-      }).catch((err) => {
-        res.status(500).send({
-          message: "Error adding task",
-          err,
-        });
-      });
-    }).catch((err) => {
-      res.status(404).send({
-        message: "User not found",
-        err,
-      });
-    });
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json(user);
   });
+});
 
-  // User.findOne({ username: req.body.username })
-  //   .then((user) => {
-  //     user.tasks.push(user.task);
-  //     user.save().then((success) => {
-  //       res.status(201).send({
-  //         message: "Task successfully added",
-  //         success,
-  //       });
-  //     }).catch((err) => {
-  //       res.status(500).send({
-  //         message: "Error adding task",
-  //         err,
-  //       });
-  //     });
-  //   }).catch((err) => {
-  //     res.status(404).send({
-  //       message: "User not found",
-  //       err,
-  //     });
-  //   });
+app.post('/:id/addtask', async (req, res) => {
+  console.log(req.params.id);
+
+  try {
+    const user = await User.findOne({ userId: req.body.userId });
+    if(!user) {
+      return res.status(404).send({
+        message: "User not found"
+      });
+    }
+    const task = new Task({
+      title: req.body.title,
+      description: req.body.description,
+      dueDate: req.body.dueDate,
+      priority: req.body.priority,
+      completed: req.body.completed,
+      userId: req.body.userId,
+    });
+
+    user.tasks.push(task);
+    await user.save();
+
+    res.status(201).send({
+      message: "Task successfully created."
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: "Error creating task."
+    });
+  }
+});
+
 
 module.exports = app;

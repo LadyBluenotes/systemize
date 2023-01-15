@@ -30,6 +30,8 @@ export default function Login() {
 
       const data = await res.json();
 
+      console.log(data);
+
       if (!res.ok) {
         setShowError(true);
         throw new Error(data.message);
@@ -38,7 +40,7 @@ export default function Login() {
       setShowSuccess(true);
       setLogin(true);
 
-      localStorage.setItem("username", data.username);
+      localStorage.setItem("userId", data.userId);
       localStorage.setItem("token", data.token);
 
       navigate('/home');
