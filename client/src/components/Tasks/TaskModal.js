@@ -33,14 +33,14 @@ export default function TaskModal() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
+                body: JSON.stringify({ task: {
                     taskName: task.taskName,
                     description: task.description,
                     priority: task.priority,
                     dueDate: task.dueDate,
                     completed: task.completed,
                     userId: userId,
-                }),
+                } }),
             });
             const data = await res.json();
             if (!res.ok) {
