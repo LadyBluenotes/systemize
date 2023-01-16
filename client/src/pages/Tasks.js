@@ -15,13 +15,15 @@ import react from 'react';
 // - TaskGroup
 
 import TaskModal from '../components/Tasks/TaskModal';
+import TaskCard from '../components/Tasks/TaskList';
 
 export default function Tasks() {
 
     return (
         <>
-            <h1>Hello World 2. </h1>
+            <h1>Tasks</h1>
             <TaskModal />
+            <TaskCard filter={'Today'}/>
         </>
     )
 }
