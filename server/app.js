@@ -93,20 +93,12 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get('/users/:username', (req, res) => {
-  const { username } = req.params;
+app.get('/:id', (req, res) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) throw err;
+    res.json({ user });
+})
 
-  User.findOne({ username }, (err, user) => {
-      if (err) {
-          return res.status(500).json({ message: err });
-      }
-
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-
-      res.json(user);
-  });
 });
 
 app.post('/addtask', async (req, res) => {
@@ -133,6 +125,13 @@ app.post('/addtask', async (req, res) => {
       message: "Error creating task."
     });
   }
+});
+
+app.get('/:id/tasks', (req, res) => {
+  Task.find({ userId: req.params.id }, (err, tasks) => {
+    if (err) throw err;
+    res.json({ tasks });
+  })
 });
 
 
