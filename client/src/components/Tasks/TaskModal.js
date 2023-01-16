@@ -28,7 +28,7 @@ export default function TaskModal() {
         const userId = localStorage.getItem("userId");
 
         try {
-            const res = await fetch(`http://localhost:5000/${userId}/addtask`, {
+            const res = await fetch(`http://localhost:5000/addtask`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export default function TaskModal() {
             if (!res.ok) {
                 throw new Error(data.message);
             }
-
+            handleClose();
         } catch (err) {
             console.log(err.message);
         }

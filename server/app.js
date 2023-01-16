@@ -110,9 +110,7 @@ app.get('/users/:username', (req, res) => {
   });
 });
 
-app.post('/:id/addtask', async (req, res) => {
-  console.log(req.params.id);
-
+app.post('/addtask', async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.body.userId });
     if(!user) {
