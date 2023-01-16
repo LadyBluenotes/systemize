@@ -4,7 +4,7 @@ import { Form, Button, Modal } from 'react-bootstrap';
 export default function TaskModal() {
     const [show, setShow] = useState(false);
     const [task, setTask] = useState({
-        title: "",
+        taskName: "",
         description: "",
         priority: "Low",
         dueDate: Date.now,
@@ -34,7 +34,7 @@ export default function TaskModal() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    title: task.title,
+                    taskName: task.taskName,
                     description: task.description,
                     priority: task.priority,
                     dueDate: task.dueDate,
@@ -64,9 +64,9 @@ export default function TaskModal() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group controlId="formTaskTitle">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control type="text" placeholder="Enter title" name="title" value={task.title} onChange={handleChange} />
+                        <Form.Group controlId="formTaskName">
+                            <Form.Label>Task Name</Form.Label>
+                            <Form.Control type="text" placeholder="Enter task" name="taskName" value={task.taskName} onChange={handleChange} />
                         </Form.Group>
                         <Form.Group controlId="formTaskDescription">
                             <Form.Label>Description</Form.Label>

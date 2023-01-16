@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const dbConnect = require("./db/conn");
 const User = require("./models/user");
 const Task = require("./models/task");
-const auth = require("./auth");
 
 dbConnect();
 
@@ -111,25 +110,20 @@ app.get('/users/:username', (req, res) => {
 });
 
 app.post('/addtask', async (req, res) => {
+
   try {
-    const user = await User.findOne({ userId: req.body.userId });
-    if(!user) {
-      return res.status(404).send({
-        message: "User not found"
-      });
-    }
     const task = new Task({
-      title: req.body.title,
-      description: req.body.description,
-      dueDate: req.body.dueDate,
-      priority: req.body.priority,
-      completed: req.body.completed,
-      userId: req.body.userId,
+      taskName: req.body.task.taskName,
+      description: req.body.task.description,
+      priority: req.body.task.priority,
+      dueDate: req.body.task.dueDate,
+      completed: req.body.task.completed,
+      userId: req.body.task.userId,
     });
-
-    user.tasks.push(task);
-    await user.save();
-
+    const newTask = await task.save();
+    await User.findOneAndUpdate({ _id: req.body.task.userId }, { 
+      $push: { tasks: newTask._id } 
+    })
     res.status(201).send({
       message: "Task successfully created."
     });
