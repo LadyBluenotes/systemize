@@ -1,6 +1,7 @@
 import react, { useState, useEffect } from 'react';
-import { Card, Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import { Card, Button, DropdownButton, Dropdown, Table } from 'react-bootstrap';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
+import TaskModal from './TaskModal';
 
 // show tasks based on the filter selected
 // display filter selected as the title
@@ -29,35 +30,76 @@ export default function TaskList({ filter }) {
       };
       fetchTasks();
     }, []);
-  
-    const dateFormat = (date) => {
 
-      // const today = 
-      // const tomorrow = 
-      // const thisWeek = 
-      // const thisMonth = 
-      // const thisYear = 
-      // const future = 
-
-      // return (date < tomorrow) ? 'Today' : (date < thisWeek) ? 'This Week' : (date < thisMonth) ? 'This Month' : (date < thisYear) ? 'This Year' : (date < future) ? 'Future' : 'Overdue';
+    const deleteTask = async (id) => {
+        await fetch(`http://localhost:5000/tasks/${id}`, {
+            method: 'DELETE',
+        });
+        setTasks(tasks.filter((task) => task._id !== id));
     }
 
+    const editTask = async (id) => {
+        await fetch(`http://localhost:5000/tasks/${id}`, {
+            method: 'PUT',
+        });
+        setTasks(tasks.filter((task) => task._id !== id));
+    }
+
+  
+    const dateFormat = (date) => {
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        const thisWeek = new Date();
+        thisWeek.setDate(today.getDate() + 7);
+        const thisMonth = new Date();
+        thisMonth.setDate(today.getDate() + 30);
+        const thisYear = new Date();
+        thisYear.setDate(today.getDate() + 365);
+        const taskDate = new Date(date);
+        return taskDate < today ? "Overdue" : taskDate < tomorrow ? "Today" : taskDate < thisWeek ? "Tomorrow" : taskDate < thisMonth ? "This Week" : taskDate < thisYear ? "This Month" : "This Year";
+    }
+    
+
   return(
-    <Card>
-    <Card.Body>
-      {tasks.map(task => (
-          <div key={task._id}>
-            <Card.Title>
-                <h4>{task.title}</h4> 
-            </Card.Title>
-            <Card.Text>{task.description}</Card.Text>
-            <Card.Text>Due Date: {dateFormat(task.date)}</Card.Text>
-            <Card.Text>Priority: {task.priority}</Card.Text>
-            <Button onClick={() => setEditMode(true)}>Edit</Button>
-            <Button>Delete</Button>
-          </div>
-      ))}
-    </Card.Body>
-  </Card>
+  //   <Card>
+  //   <Card.Body>
+  //     {tasks.map(task => (
+  //         <div key={task._id}>
+  //           <Card.Title>{task.taskName}</Card.Title>
+  //           <Card.Text>{task.description}</Card.Text>
+  //           <Card.Text>Due Date: {dateFormat(task.dueDate)}</Card.Text>
+  //           <Card.Text>Priority: {task.priority}</Card.Text>
+  //           <Button onClick={() => setEditMode(true)}>Edit</Button>
+  //           <Button onClick={() => deleteTask(task._id)}>Delete</Button>
+  //         </div>
+  //     ))}
+  //   </Card.Body>
+  // </Card>
+  <Table striped bordered hover>
+      <thead>
+        <tr>
+          <th>Task Name</th>
+          <th>Description</th>
+          <th>Due Date</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tasks.map(task => (
+          <tr key={task._id}>
+            <td>{task.taskName}</td>
+            <td>{task.description}</td>
+            <td>{dateFormat(task.dueDate)}</td>
+            <td>{task.priority}</td>
+            <td>
+              <Button onClick={() => setEditMode(true)}>Edit</Button>
+              <Button onClick={() => deleteTask(task._id)}>Delete</Button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   )
 }

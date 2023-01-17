@@ -47,6 +47,7 @@ export default function TaskModal() {
                 throw new Error(data.message);
             }
             handleClose();
+            window.location.reload();
         } catch (err) {
             console.log(err.message);
         }
