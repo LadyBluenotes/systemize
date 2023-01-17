@@ -1,6 +1,6 @@
 import react, { useState, useEffect } from 'react';
 import { Button, Table, Form } from 'react-bootstrap';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaTrashAlt, FaCheck } from 'react-icons/fa';
 import { EditTaskModal } from './EditTaskModal';
 
 export default function TaskList() {
@@ -31,7 +31,19 @@ export default function TaskList() {
         setTasks(tasks.filter((task) => task._id !== id));
     }
 
-  
+    const completeTask = async (id, status) => {
+        await fetch(`http://localhost:5000/tasks/${id}/checkbox`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ task: {
+                completed: status,
+            } }),
+        });
+        setTasks(tasks.filter((task) => task._id !== id));
+    }
+
     const dateFormat = (date) => {
         const dateArr = date.split('T');
         const dateArr2 = dateArr[0].split('-');
@@ -49,7 +61,6 @@ export default function TaskList() {
     }
 
     const taskStatus = (dueDate, completed) => {
-
           const today = new Date();
           const todayFormat = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
           dueDate = new Date(dueDate);
@@ -70,13 +81,23 @@ export default function TaskList() {
               return "In Progress";
           }
     }
-    
+
+    const taskComplete = (status) => { 
+      if (status === "Yes") {
+        return <FaCheck />
+      } else if (status === "No") {
+        return <></>
+      }
+        
+    }
 
   return(
     <>
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th></th>
+            <th>Status</th>
             <th>Task Name</th>
             <th>Description</th>
             <th>Due Date</th>
@@ -87,11 +108,9 @@ export default function TaskList() {
         <tbody>
           {tasks.map(task => (
             <tr key={task._id}>
-              <td>
-                {task.taskName}
-                <br/>
-                <Form.Text className="text-muted">{taskStatus(task.dueDate, task.completed)}</Form.Text>
-              </td>
+              <td>{taskComplete(task.completed)}</td>
+              <td><Form.Text className="text-muted">{taskStatus(task.dueDate, task.completed)}</Form.Text></td>
+              <td>{task.taskName}</td>
               <td>{task.description}</td>
               <td>{dateFormat(task.dueDate)}</td>
               <td>{task.priority}</td>
