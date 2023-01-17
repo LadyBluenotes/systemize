@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Toast, ToastContainer } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 // errors for when password or username is too short to prevent from submitting
 
@@ -32,8 +32,6 @@ export default function SignUp() {
 
       const data = await res.json();
 
-      console.log(data);
-
       if (!res.ok) {
         setShowError(true);
         throw new Error(data.message);
@@ -55,38 +53,6 @@ export default function SignUp() {
 
     return (
       <>
-        <ToastContainer>
-          <Toast
-            className="d-inline-block m-1 toast"
-            onClose={() => setShowError(false)} 
-            show={showError} 
-            bg={'danger'}
-            delay={3000} 
-            autohide
-          >
-            <Toast.Header>
-              <strong className="me-auto">Error creating account.</strong>
-            </Toast.Header>
-            <Toast.Body>
-              {/* put error message here (ex. username already in use, password / username too short, something left empty*/}
-              Please try again.
-            </Toast.Body>
-          </Toast>
-
-          <Toast
-            className="d-inline-block m-1 toast"
-            onClose={() => setShowSuccess(false)} 
-            show={showSuccess} 
-            bg={'success'}
-            delay={3000} 
-            autohide
-          >
-            <Toast.Header>
-              <strong className="me-auto">account successfully created!</strong>
-            </Toast.Header>
-          </Toast>
-        </ToastContainer>
-
         <form className='auth-wrapper auth-inner'>
           <h3>Sign Up</h3>
           <div className="mb-3">

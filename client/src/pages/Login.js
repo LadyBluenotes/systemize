@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Toast, ToastContainer } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import Cookie from 'cookie-universal';
 const cookies = Cookie();
 
@@ -10,7 +10,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState("");
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -29,8 +31,6 @@ export default function Login() {
       });
 
       const data = await res.json();
-
-      console.log(data);
 
       if (!res.ok) {
         setShowError(true);
@@ -54,38 +54,6 @@ export default function Login() {
 
   return (
     <>
-      <ToastContainer>
-          <Toast
-            className="d-inline-block m-1 toast"
-            onClose={() => setShowError(false)} 
-            show={showError} 
-            bg={'danger'}
-            delay={3000} 
-            autohide
-          >
-            <Toast.Header>
-              <strong className="me-auto">Error logging in.</strong>
-            </Toast.Header>
-            <Toast.Body>
-              {/* put error message here (ex. username already in use, password / username too short, something left empty*/}
-              Please try again.
-            </Toast.Body>
-          </Toast>
-
-          <Toast
-            className="d-inline-block m-1 toast"
-            onClose={() => setShowSuccess(false)} 
-            show={showSuccess} 
-            bg={'success'}
-            delay={3000} 
-            autohide
-          >
-            <Toast.Header>
-              <strong className="me-auto">Successfully logged in!</strong>
-            </Toast.Header>
-          </Toast>
-        </ToastContainer>
-
       <form className='auth-wrapper auth-inner'>
         <h3>Log In</h3>
         <div className="mb-3">

@@ -47,36 +47,24 @@ export default function TaskList({ filter }) {
 
   
     const dateFormat = (date) => {
-        const today = new Date();
-        const tomorrow = new Date();
-        tomorrow.setDate(today.getDate() + 1);
-        const thisWeek = new Date();
-        thisWeek.setDate(today.getDate() + 7);
-        const thisMonth = new Date();
-        thisMonth.setDate(today.getDate() + 30);
-        const thisYear = new Date();
-        thisYear.setDate(today.getDate() + 365);
-        const taskDate = new Date(date);
-        return taskDate < today ? "Overdue" : taskDate < tomorrow ? "Today" : taskDate < thisWeek ? "Tomorrow" : taskDate < thisMonth ? "This Week" : taskDate < thisYear ? "This Month" : "This Year";
+        const dateArr = date.split('T');
+        const dateArr2 = dateArr[0].split('-');
+        let month = dateArr2[1];
+        let day = dateArr2[2];
+        const dayNum = parseInt(day);
+        // let year = dateArr2[0];
+        const dayOfWeek = new Date(date).getDay()+1;
+        const monthNum = parseInt(month);
+        const dayOfWeekArr = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
+        const monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        day = dayOfWeekArr[dayOfWeek];
+        month = monthArr[monthNum - 1];
+        return `${day}, ${month} ${dayNum}`;
     }
     
 
   return(
-  //   <Card>
-  //   <Card.Body>
-  //     {tasks.map(task => (
-  //         <div key={task._id}>
-  //           <Card.Title>{task.taskName}</Card.Title>
-  //           <Card.Text>{task.description}</Card.Text>
-  //           <Card.Text>Due Date: {dateFormat(task.dueDate)}</Card.Text>
-  //           <Card.Text>Priority: {task.priority}</Card.Text>
-  //           <Button onClick={() => setEditMode(true)}>Edit</Button>
-  //           <Button onClick={() => deleteTask(task._id)}>Delete</Button>
-  //         </div>
-  //     ))}
-  //   </Card.Body>
-  // </Card>
-  <Table striped bordered hover>
+    <Table striped bordered hover>
       <thead>
         <tr>
           <th>Task Name</th>
