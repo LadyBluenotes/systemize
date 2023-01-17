@@ -16,10 +16,6 @@ const UserSchema = new mongoose.Schema({
         required: [true],
         unique: false,
         },
-    tasks: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tasks",
-        }],
     });
 
 module.exports = mongoose.model.Users || mongoose.model("Users", UserSchema);

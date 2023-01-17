@@ -102,7 +102,6 @@ app.get('/:id', (req, res) => {
 });
 
 app.post('/addtask', async (req, res) => {
-
   try {
     const task = new Task({
       taskName: req.body.task.taskName,
@@ -113,9 +112,6 @@ app.post('/addtask', async (req, res) => {
       userId: req.body.task.userId,
     });
     const newTask = await task.save();
-    await User.findOneAndUpdate({ _id: req.body.task.userId }, { 
-      $push: { tasks: newTask._id } 
-    })
     res.status(201).send({
       message: "Task successfully created."
     });
@@ -134,5 +130,46 @@ app.get('/:id/tasks', (req, res) => {
   })
 });
 
+app.get('/tasks/:taskId', async (req, res) => {
+    try {
+        Task.findById(req.params.taskId, (err, task) => {
+        if (err) throw err;
+        res.json({ task });
+      })
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({
+        message: "Error retrieving task."
+      });
+    }
+  });
+
+app.delete('/tasks/:taskId', async (req, res) => {
+  try {
+    await Task.findByIdAndDelete({ _id: req.params.taskId });
+    res.status(200).send({
+      message: "Task successfully deleted."
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: "Error deleting task."
+    });
+  }
+});
+
+app.put('/tasks/:taskId', async (req, res) => {
+    try {
+      await Task.findByIdAndUpdate(req.params.taskId, req.body.task);
+      res.status(200).send({
+        message: "Task successfully updated."
+    });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({
+        message: "Error updating task."
+      });
+    }
+});
 
 module.exports = app;

@@ -1,4 +1,4 @@
-import react, {useState} from 'react';
+import react, { useState, useEffect } from 'react';
 import { Card, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 
@@ -14,24 +14,50 @@ export default function TaskList({ filter }) {
     const [tasks, setTasks] = useState([]);
     const [editMode, setEditMode] = useState(false);
 
+    const getTasks = async () => {
+        const userId = localStorage.getItem('userId');
+        const res = await fetch(`http://localhost:5000/${userId}/tasks`);
+        const data = await res.json();
 
-    return(
-        <Card>
-        <Card.Body>
-          <Card.Title>
-            <h4>Task</h4> 
-                <DropdownButton id="dropdown-basic-button" title={"Not Completed"}>
-                    <Dropdown.Item>Not Completed</Dropdown.Item>
-                    <Dropdown.Item>In Progress</Dropdown.Item>
-                    <Dropdown.Item>Completed</Dropdown.Item>
-                </DropdownButton>
-          </Card.Title>
-          <Card.Text>Description</Card.Text>
-          <Card.Text>Priority: Low</Card.Text>
-          <Button>Edit</Button>
-          <Button>Delete</Button>
-        </Card.Body>
-      </Card>
-    )
+        return data.tasks;
+    }
 
+    useEffect(() => {
+      const fetchTasks = async () => {
+        const tasks = await getTasks();
+        setTasks(tasks);
+      };
+      fetchTasks();
+    }, []);
+  
+    const dateFormat = (date) => {
+
+      // const today = 
+      // const tomorrow = 
+      // const thisWeek = 
+      // const thisMonth = 
+      // const thisYear = 
+      // const future = 
+
+      // return (date < tomorrow) ? 'Today' : (date < thisWeek) ? 'This Week' : (date < thisMonth) ? 'This Month' : (date < thisYear) ? 'This Year' : (date < future) ? 'Future' : 'Overdue';
+    }
+
+  return(
+    <Card>
+    <Card.Body>
+      {tasks.map(task => (
+          <div key={task._id}>
+            <Card.Title>
+                <h4>{task.title}</h4> 
+            </Card.Title>
+            <Card.Text>{task.description}</Card.Text>
+            <Card.Text>Due Date: {dateFormat(task.date)}</Card.Text>
+            <Card.Text>Priority: {task.priority}</Card.Text>
+            <Button onClick={() => setEditMode(true)}>Edit</Button>
+            <Button>Delete</Button>
+          </div>
+      ))}
+    </Card.Body>
+  </Card>
+  )
 }
