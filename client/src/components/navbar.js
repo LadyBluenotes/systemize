@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 
 function AppNavbar({ isSignedIn }) {
@@ -23,7 +22,7 @@ function AppNavbar({ isSignedIn }) {
           )}
           {isSignedIn && (
             <>
-                <Nav.Link href="/dashboard">Home</Nav.Link>
+                <Nav.Link href="/home">Home</Nav.Link>
                 <Nav.Link href="/tasks">Tasks</Nav.Link>
                 <Button variant="outline-danger" className="logout-placement" onClick={handleLogout}>Logout</Button>
               

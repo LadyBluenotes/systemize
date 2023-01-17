@@ -73,3 +73,31 @@ body, html, .App, #root, .auth-wrapper {
   position: absolute;
   right: 20px;
 }
+.task-page-title {
+  padding: 20px;
+  text-align: center;
+}
+.task-page-functions {
+  padding: 20px;
+  text-align: right;
+}
+.task-list-container {
+  padding: 20px;
+}
+.action-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.card-style {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #e1e1e1;
+  border-radius: 5px;
+  width: 500px;
+}
+.no-task-message {
+  text-align: center;
+  padding: 20px;
+  color: #7f7d7d;
+}

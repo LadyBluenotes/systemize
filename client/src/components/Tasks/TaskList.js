@@ -1,4 +1,4 @@
-import react, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Table, Form } from 'react-bootstrap';
 import { FaTrashAlt, FaCheck } from 'react-icons/fa';
 import { EditTaskModal } from './EditTaskModal';
@@ -6,8 +6,6 @@ import { EditTaskModal } from './EditTaskModal';
 export default function TaskList() {
 
     const [tasks, setTasks] = useState([]);
-    const [editMode, setEditMode] = useState(false);
-
     const getTasks = async () => {
         const userId = localStorage.getItem('userId');
         const res = await fetch(`http://localhost:5000/${userId}/tasks`);
@@ -27,19 +25,6 @@ export default function TaskList() {
     const deleteTask = async (id) => {
         await fetch(`http://localhost:5000/tasks/${id}`, {
             method: 'DELETE',
-        });
-        setTasks(tasks.filter((task) => task._id !== id));
-    }
-
-    const completeTask = async (id, status) => {
-        await fetch(`http://localhost:5000/tasks/${id}/checkbox`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ task: {
-                completed: status,
-            } }),
         });
         setTasks(tasks.filter((task) => task._id !== id));
     }
@@ -115,8 +100,10 @@ export default function TaskList() {
               <td>{dateFormat(task.dueDate)}</td>
               <td>{task.priority}</td>
               <td>
-                <EditTaskModal task={task} />
-                <Button onClick={() => deleteTask(task._id)}><FaTrashAlt /></Button>
+                <div className='action-buttons'>
+                  <EditTaskModal task={task} />
+                  <Button onClick={() => deleteTask(task._id)}><FaTrashAlt /></Button>
+                </div>
               </td>
             </tr>
           ))}

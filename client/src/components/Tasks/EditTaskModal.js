@@ -55,7 +55,7 @@ export function EditTaskModal({ task }) {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Edit
+        <FaEdit />
       </Button>
 
       <Modal show={show} onHide={handleClose}>
