@@ -1,7 +1,7 @@
 import react from 'react';
 
 import TaskModal from '../components/Tasks/TaskModal';
-import TaskCard from '../components/Tasks/TaskList';
+import TaskList from '../components/Tasks/TaskList';
 
 export default function Tasks() {
 
@@ -9,7 +9,7 @@ export default function Tasks() {
         <>
             <h1>Tasks</h1>
             <TaskModal />
-            <TaskCard />
+            <TaskList />
         </>
     )
 }

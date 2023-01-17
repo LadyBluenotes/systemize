@@ -5,4 +5,4 @@
 - Tasks:
     - Ability to filter tasks based on name, due date, priority
     - Search based on name
-    - Fix dates so today is not overdue, tomorrow is not today and 2 days from now is not tomorrow, etc
+    - When edit is hit, a modal pops up to edit the task

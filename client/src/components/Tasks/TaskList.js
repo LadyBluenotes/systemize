@@ -1,16 +1,9 @@
 import react, { useState, useEffect } from 'react';
-import { Card, Button, DropdownButton, Dropdown, Table } from 'react-bootstrap';
-import { FaTrashAlt, FaEdit } from 'react-icons/fa';
-import TaskModal from './TaskModal';
+import { Button, Table, Form } from 'react-bootstrap';
+import { FaTrashAlt } from 'react-icons/fa';
+import { EditTaskModal } from './EditTaskModal';
 
-// show tasks based on the filter selected
-// display filter selected as the title
-// use react-bootstrap to display the tasks in a card format
-    // card title should be the task name with priority and due date as subtext
-    // card text should include the task description, and a button to edit or delete the task
-    // card footer should include the ability to mark a task as completed, in progress, or not started
-
-export default function TaskList({ filter }) {
+export default function TaskList() {
 
     const [tasks, setTasks] = useState([]);
     const [editMode, setEditMode] = useState(false);
@@ -38,13 +31,6 @@ export default function TaskList({ filter }) {
         setTasks(tasks.filter((task) => task._id !== id));
     }
 
-    const editTask = async (id) => {
-        await fetch(`http://localhost:5000/tasks/${id}`, {
-            method: 'PUT',
-        });
-        setTasks(tasks.filter((task) => task._id !== id));
-    }
-
   
     const dateFormat = (date) => {
         const dateArr = date.split('T');
@@ -61,33 +47,62 @@ export default function TaskList({ filter }) {
         month = monthArr[monthNum - 1];
         return `${day}, ${month} ${dayNum}`;
     }
+
+    const taskStatus = (dueDate, completed) => {
+
+          const today = new Date();
+          const todayFormat = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+          dueDate = new Date(dueDate);
+          const dueDateFormat = dueDate.getFullYear() + '-' + (dueDate.getMonth() + 1) + '-' + dueDate.getDate()+1;
+          if (completed === "Yes") {
+              return "Complete";
+          } else if (completed === "No" && dueDateFormat === todayFormat) {
+              return "Past Due";
+          } else if (completed === "No" && dueDateFormat < todayFormat) {
+              return "Due Today";
+          } else if (completed === "No" && dueDateFormat === todayFormat + 1) {
+              return "Due Tomorrow";
+          } else if (completed === "No" && dueDateFormat <= todayFormat + 7) {
+              return "Due Soon";
+          } else if (completed === "No" && dueDateFormat > todayFormat + 7) {
+              return "Incomplete";
+          } else if (completed === "In Progress") {
+              return "In Progress";
+          }
+    }
     
 
   return(
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>Task Name</th>
-          <th>Description</th>
-          <th>Due Date</th>
-          <th>Priority</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {tasks.map(task => (
-          <tr key={task._id}>
-            <td>{task.taskName}</td>
-            <td>{task.description}</td>
-            <td>{dateFormat(task.dueDate)}</td>
-            <td>{task.priority}</td>
-            <td>
-              <Button onClick={() => setEditMode(true)}>Edit</Button>
-              <Button onClick={() => deleteTask(task._id)}>Delete</Button>
-            </td>
+    <>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {tasks.map(task => (
+            <tr key={task._id}>
+              <td>
+                {task.taskName}
+                <br/>
+                <Form.Text className="text-muted">{taskStatus(task.dueDate, task.completed)}</Form.Text>
+              </td>
+              <td>{task.description}</td>
+              <td>{dateFormat(task.dueDate)}</td>
+              <td>{task.priority}</td>
+              <td>
+                <EditTaskModal task={task} />
+                <Button onClick={() => deleteTask(task._id)}><FaTrashAlt /></Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </>
   )
 }
