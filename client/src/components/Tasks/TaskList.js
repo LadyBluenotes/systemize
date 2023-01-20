@@ -52,18 +52,18 @@ export default function TaskList() {
           const dueDateFormat = dueDate.getFullYear() + '-' + (dueDate.getMonth() + 1) + '-' + dueDate.getDate()+1;
           if (completed === "Yes") {
               return "Complete";
+          } else if (completed === "In Progress") {
+              return "In Progress";
           } else if (completed === "No" && dueDateFormat === todayFormat) {
-              return "Past Due";
-          } else if (completed === "No" && dueDateFormat < todayFormat) {
               return "Due Today";
           } else if (completed === "No" && dueDateFormat === todayFormat + 1) {
               return "Due Tomorrow";
-          } else if (completed === "No" && dueDateFormat <= todayFormat + 7) {
+          } else if (completed === "No" && dueDateFormat < todayFormat + 7) {
               return "Due Soon";
-          } else if (completed === "No" && dueDateFormat > todayFormat + 7) {
+          } else if (completed === "No" && dueDateFormat < todayFormat + 7) {
               return "Incomplete";
-          } else if (completed === "In Progress") {
-              return "In Progress";
+          } else {
+              return "Past Due";
           }
     }
 
