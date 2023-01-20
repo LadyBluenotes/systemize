@@ -1,9 +1,31 @@
 import { useState, useEffect } from 'react';
-import { Card, ListGroup } from 'react-bootstrap';
+import { Card, ListGroup, Form } from 'react-bootstrap';
 
-export default function TaskCard({ date }) {
+export default function TaskCard() {
 
     const [tasks, setTasks] = useState([]);
+
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        fetch(`http://localhost:5000/${userId}/tasks`)
+            .then(res => res.json())
+            .then(data => {
+                setTasks(data.tasks);
+
+            })
+            .catch(err => console.log(err));
+        }, []);
+
+        // filter if task is today
+        const today = new Date();
+        const todayTasks = tasks.filter(task => {
+            // any task that is due today or before today will be included in today's tasks
+            return new Date(task.dueDate) <= today;
+        });
+
+        // function to change task status to completed
+        // const changeTaskStatus = (e) => {
+
 
     const noTaskMessages = [
         "Nothing to do today, just sit back and relax!",
@@ -26,44 +48,36 @@ export default function TaskCard({ date }) {
         "Task list is empty, time to indulge in some self-care.",
         "No tasks, no pressure, just enjoy the day ahead."
       ];
-
-      const getTasks = async () => {
-        const userId = localStorage.getItem('userId');
-        const res = await fetch(`http://localhost:5000/${userId}/tasks`);
-        const data = await res.json();
-
-        return data.tasks;
-    }
-
-    // useEffect(() => {
-    //     const fetchTasks = async () => {
-    //       const tasks = await getTasks();
-    //       setTasks(tasks);
-    //     };
-    //     fetchTasks();
-    //   }, []);
-
-    // const todaysTasks = tasks.filter(task => {
-    //     const today = new Date();
-    //     const dueDate = new Date(task.dueDate);
-    //     return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() === dueDate.getFullYear() + '-' + (dueDate.getMonth() + 1) + '-' + dueDate.getDate()+1;
-    // });
-
-    // console.log(todaysTasks);
     
     return(
         <>
             <Card className='card-style'>
                 <Card.Header>Today's Tasks</Card.Header>
                 {
-                    tasks.length === 0 ? 
+                    todayTasks && todayTasks.length === 0 ? 
                         <Card.Body className='no-task-message'>
                             {noTaskMessages[Math.floor(Math.random() * noTaskMessages.length)]}
                         </Card.Body> : 
                         <ListGroup variant="flush">
-                            {tasks.map((task, index) => ( <ListGroup.Item key={index}>{task}</ListGroup.Item>
+                            {todayTasks.map((task, index) => (
+                                <ListGroup.Item key={index}
+                                    className={task.priority === "High" ? "high-priority" : task.priority === "Medium" ? "medium-priority" : ""}
+                                >
+                                    <h4 className='today-task-name'>
+                                        {task.priority ? (task.priority === "High" ? "!!! " : task.priority === "Medium" ? "! " : "") : ""}
+                                        {task.taskName.charAt(0).toUpperCase() + task.taskName.slice(1)}
+                                        <div className='checkbox-container'>
+                                        <Form.Check 
+                                            type="checkbox" 
+                                            // onClick={changeTaskStatus}
+                                            />
+                                    </div>
+                                    </h4>
+                                    <p>{task.description}</p>
+                                    
+                                </ListGroup.Item>
                             ))}
-                </ListGroup>
+                        </ListGroup>
                 }
             </Card>
         </>

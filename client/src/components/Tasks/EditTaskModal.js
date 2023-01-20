@@ -84,14 +84,6 @@ export function EditTaskModal({ task }) {
                 <Form.Label>Due Date</Form.Label>
                 <Form.Control type="date" name="dueDate" value={taskData.dueDate} onChange={handleChange} />
             </Form.Group>
-            <Form.Group controlId="formTaskCompleted">
-                <Form.Label>Completed</Form.Label>
-                <Form.Control as="select" name="completed" value={taskData.completed} onChange={handleChange}>
-                    <option>Yes</option>
-                    <option>No</option>
-                    <option>In Progress</option>
-                </Form.Control>
-            </Form.Group>
         </Form>
         </Modal.Body>
         <Modal.Footer>

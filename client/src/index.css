@@ -101,3 +101,29 @@ body, html, .App, #root, .auth-wrapper {
   padding: 20px;
   color: #7f7d7d;
 }
+.greeting-title {
+  font-size: 8rem;
+  text-align: center;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 24px 0 64px;
+  color: #031926;
+}
+.task-description {
+  font-size: 0.8rem;
+}
+.high-priority {
+  color: #ff0000;
+}
+.medium-priority {
+  color: #ff9900;
+}
+.today-task-name {
+  font-weight: 600;
+}
+.checkbox-container {
+  /* display: flex;
+  align-items: center;
+  justify-content: right; */
+  float: right;
+}

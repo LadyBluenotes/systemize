@@ -19,9 +19,8 @@ const TaskSchema = new mongoose.Schema({
         required: true,
     },
     completed: {
-        type: String,
-        default: "No",
-        enum: ["Yes", "No", "In Progress"],
+        type: Boolean,
+        default: false,
     },
     userId:{
         type: String,

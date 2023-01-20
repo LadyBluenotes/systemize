@@ -8,7 +8,7 @@ export default function TaskModal() {
         description: "",
         priority: "Low",
         dueDate: Date.now,
-        completed: "No",
+        completed: false,
         userId: "",
     });
 
@@ -38,7 +38,7 @@ export default function TaskModal() {
                     description: task.description,
                     priority: task.priority,
                     dueDate: task.dueDate,
-                    completed: task.completed,
+                    completed: false,
                     userId: userId,
                 } }),
             });
@@ -85,14 +85,6 @@ export default function TaskModal() {
                         <Form.Group controlId="formTaskDueDate">
                             <Form.Label>Due Date</Form.Label>
                             <Form.Control type="date" name="dueDate" value={task.dueDate} onChange={handleChange} />
-                        </Form.Group>
-                        <Form.Group controlId="formTaskCompleted">
-                            <Form.Label>Completed</Form.Label>
-                            <Form.Control as="select" name="completed" value={task.completed} onChange={handleChange}>
-                                <option>Yes</option>
-                                <option>No</option>
-                                <option>In Progress</option>
-                            </Form.Control>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

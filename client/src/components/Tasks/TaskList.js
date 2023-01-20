@@ -29,6 +29,25 @@ export default function TaskList() {
         setTasks(tasks.filter((task) => task._id !== id));
     }
 
+    const completeTask = async (id) => {
+        const task = tasks.find((task) => task._id === id);
+
+        const res = await fetch(`http://localhost:5000/tasks/${id}/complete`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ completed: !task.completed }),
+        });
+        const data = await res.json();
+
+
+        setTasks(
+          tasks.map((task) =>
+              task._id === id ? { ...task, completed: !data.completed } : task
+              ));
+    }
+
     const dateFormat = (date) => {
         const dateArr = date.split('T');
         const dateArr2 = dateArr[0].split('-');
@@ -46,34 +65,21 @@ export default function TaskList() {
     }
 
     const taskStatus = (dueDate, completed) => {
-          const today = new Date();
-          const todayFormat = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-          dueDate = new Date(dueDate);
-          const dueDateFormat = dueDate.getFullYear() + '-' + (dueDate.getMonth() + 1) + '-' + dueDate.getDate()+1;
-          if (completed === "Yes") {
-              return "Complete";
-          } else if (completed === "In Progress") {
-              return "In Progress";
-          } else if (completed === "No" && dueDateFormat === todayFormat) {
-              return "Due Today";
-          } else if (completed === "No" && dueDateFormat === todayFormat + 1) {
-              return "Due Tomorrow";
-          } else if (completed === "No" && dueDateFormat < todayFormat + 7) {
-              return "Due Soon";
-          } else if (completed === "No" && dueDateFormat < todayFormat + 7) {
-              return "Incomplete";
-          } else {
-              return "Past Due";
-          }
-    }
-
-    const taskComplete = (status) => { 
-      if (status === "Yes") {
-        return <FaCheck />
-      } else if (status === "No") {
-        return <></>
+      const today = new Date();
+      let todayLocal = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const due = new Date(dueDate);
+      let dueLocal = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+      dueLocal = dueLocal.setDate(dueLocal.getDate() + 1);
+      dueLocal = new Date(dueLocal);
+      if (completed === "Yes") {
+        return "Completed"
+      } else if (dueLocal < todayLocal) {
+        return "Overdue"
+      } else if (dueLocal > todayLocal) {
+        return "Upcoming"
+      } else {
+        return "Due Today"
       }
-        
     }
 
   return(
@@ -93,10 +99,15 @@ export default function TaskList() {
         <tbody>
           {tasks.map(task => (
             <tr key={task._id}>
-              <td>{taskComplete(task.completed)}</td>
+              <td><Form.Check 
+                type="checkbox"
+                id={task._id}
+                checked={task.completed}
+                onChange={() => completeTask(task._id)}
+              /></td>
               <td><Form.Text className="text-muted">{taskStatus(task.dueDate, task.completed)}</Form.Text></td>
               <td>{task.taskName}</td>
-              <td>{task.description}</td>
+              <td className='task-description'>{task.description}</td>
               <td>{dateFormat(task.dueDate)}</td>
               <td>{task.priority}</td>
               <td>

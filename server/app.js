@@ -93,12 +93,14 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get('/:id', (req, res) => {
-  User.findById(req.params.id, (err, user) => {
-    if (err) throw err;
-    res.json({ user });
-})
-
+app.get("/:id", async (req, res) => {
+  await User.findById(req.params.id, (err, user) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(user);
+    }
+  });
 });
 
 app.post('/addtask', async (req, res) => {
@@ -170,6 +172,23 @@ app.put('/tasks/:taskId', async (req, res) => {
         message: "Error updating task."
       });
     }
+});
+
+app.put('/tasks/:taskId/complete', async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(req.params.taskId, { completed: req.body.completed },{new: true});
+    if(!task)
+      return res.status(404).send({message: "Task not found"});
+    res.status(200).send({
+      message: "Task successfully updated.",
+      task
+  });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      message: "Error updating task."
+    });
+  }
 });
 
 module.exports = app;

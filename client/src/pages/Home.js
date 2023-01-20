@@ -17,7 +17,7 @@ export default function Home() {
 
     return (
         <>
-            <h1>{greeting()}</h1>
+            <h1 className='greeting-title'>{greeting()}<span></span></h1>
             <TaskCard />
         </>
     )
